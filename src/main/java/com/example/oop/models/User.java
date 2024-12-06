@@ -1,12 +1,12 @@
 package com.example.oop.models;
 
 public abstract class User {
-    private final String name;
-    private final String email;
+    protected  String name;
+    protected  String email;
     private final String password;
-    private final String birthdate;
+    private  final String birthdate;
     private final String gender;
-    private final String phone;
+    protected  String phone;
     private final String id;
 
     public User(String name, String email, String password, String birthdate, String gender, String phone, String id) {
@@ -45,6 +45,24 @@ public abstract class User {
 
     public String getId() {
         return id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public User findUser(String name){
+        RegularUser user = null;
+
+        return user;
     }
 
     public abstract void displayInfo();

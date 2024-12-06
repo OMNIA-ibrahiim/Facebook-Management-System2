@@ -1,6 +1,6 @@
 package com.example.oop.controllers;
 
-import com.example.oop.models.RegisteredUser;
+import com.example.oop.models.*;
 import com.example.oop.utils.FileManager;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -61,7 +61,7 @@ public class RegistrationController {
                 }
 
                 // Create a new user and save it to the file
-                RegisteredUser user = new RegisteredUser(name, email, password, birthdate, gender, phone, id);
+                RegularUser  user = new RegularUser(name, email, password, birthdate, gender, phone, id);
                 FileManager.saveUser(user);
 
                 // Show success message

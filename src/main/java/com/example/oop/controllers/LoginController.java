@@ -1,6 +1,6 @@
 package com.example.oop.controllers;
 
-import com.example.oop.models.RegisteredUser;
+import com.example.oop.models.*;
 import com.example.oop.utils.FileManager;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -32,13 +32,15 @@ public class LoginController {
                 }
 
                 // Check if the email exists and the password is correct
-                RegisteredUser user = FileManager.getUserByEmailAndPassword(email, password);
+                RegularUser user = FileManager.getUserByEmailAndPassword(email, password);
                 if (user == null) {
                     throw new IllegalArgumentException("Invalid email or password!");
                 }
 
                 // Successful login
                 new Alert(Alert.AlertType.INFORMATION, "Login Successful!").show();
+                openProfileView(user);
+
                 // Proceed to next page or dashboard here
 
             } catch (IllegalArgumentException ex) {
@@ -61,5 +63,19 @@ public class LoginController {
         stage.setScene(scene);
         stage.setTitle("Login Form");
         stage.show();
+    }
+    // Method to open the profile view
+    private void openProfileView(RegularUser user) {
+        // Create a new instance of the ViewProfileController and pass the user
+        try {
+            ViewProfileController viewProfileController = new ViewProfileController();
+            viewProfileController.initialize(user);
+
+            // Initialize the profile window
+            Stage stage = new Stage();
+            viewProfileController.start(stage,user);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
