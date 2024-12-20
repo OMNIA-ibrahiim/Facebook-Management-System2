@@ -7,9 +7,9 @@ public abstract class User {
     private  final String birthdate;
     private final String gender;
     protected  String phone;
-    private final String id;
+    private final Integer id;
 
-    public User(String name, String email, String password, String birthdate, String gender, String phone, String id) {
+    public User(String name, String email, String password, String birthdate, String gender, String phone, int id) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -43,7 +43,7 @@ public abstract class User {
         return phone;
     }
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -59,11 +59,4 @@ public abstract class User {
         this.phone = phone;
     }
 
-    public User findUser(String name){
-        RegularUser user = null;
-
-        return user;
-    }
-
-    public abstract void displayInfo();
 }

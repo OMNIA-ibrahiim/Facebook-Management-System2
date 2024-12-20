@@ -1,34 +1,40 @@
 package com.example.oop.models;
 
-import com.sun.javafx.scene.shape.ArcHelper;
+import com.example.oop.utils.PostManager;
+import com.example.oop.utils.RegularUserManager;
+import javafx.scene.control.Alert;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
-public class RegularUser extends User{
+public class RegularUser extends User {
 
-    private ArrayList<RegularUser> friends;
-    private ArrayList<RegularUser> restrictedFriends;
-    private ArrayList<Post> posts;
+    private ArrayList<Integer> friends;
+    private ArrayList<Integer> restrictedFriends;
     private boolean banned;
+    private String banTimestamp;
+    private String banReason;
+    private boolean hasNewNotification;
 
-    public RegularUser(String name, String email, String password, String birthdate, String gender, String phone, String id) {
+    public RegularUser(String name, String email, String password, String birthdate, String gender, String phone, Integer id) {
         super(name, email, password, birthdate, gender, phone, id);
         friends = new ArrayList<>();
         restrictedFriends = new ArrayList<>();
-        posts = new ArrayList<>();
         banned = false;
+        banReason = "NOTHING";
+        banTimestamp = "00:00:00";
+        hasNewNotification = false;
+        RegularUserManager.saveUser(this);
     }
 
-    public ArrayList<RegularUser> getFriends() {
+    public ArrayList<Integer> getFriends() {
         return friends;
     }
 
-    public ArrayList<RegularUser> getRestrictedFriends() {
+    public ArrayList<Integer> getRestrictedFriends() {
         return restrictedFriends;
-    }
-
-    public ArrayList<Post> getPosts() {
-        return posts;
     }
 
     public boolean isBanned() {
@@ -37,115 +43,139 @@ public class RegularUser extends User{
 
     public void setBanned(boolean banned) {
         this.banned = banned;
+        RegularUserManager.updateUser(this);
     }
 
-    public void addFriend(RegularUser user) {
-        boolean isAlreadyFriend=false;
-        ArrayList<RegularUser> friends = this.getFriends();
-        ArrayList<RegularUser> restrictedfriends = this.getRestrictedFriends();
+    public void setBanTimestamp() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        this.banTimestamp = LocalDateTime.now().format(formatter);
+        RegularUserManager.updateUser(this);
+    }
 
-        if(friends.contains(user)||restrictedfriends.contains(user)){
-            isAlreadyFriend = true;
+    public String getFriendship(RegularUser user) {
+        try {
+            if (this.getFriends() == null && this.getRestrictedFriends() == null)
+                    return "notFriend";
+            if (this.getFriends().contains(user.getId()))
+                return "normal";
+            else if (this.getRestrictedFriends().contains(user.getId()))
+                return "restricted";
+            else
+                return "notFriend";
+        }catch (NullPointerException e){
+            return "notFriend";
         }
-        if(!isAlreadyFriend)
-            friends.add(user);
     }
 
-    public void addRestrictedFriend(RegularUser user) {
-        restrictedFriends.add(user);
+    public void setBanReason(String banReason) {
+        this.banReason = banReason;
+        RegularUserManager.updateUser(this);
+    }
+
+    public String getBanTimestamp() {
+        return banTimestamp;
+    }
+
+    public String getBanReason() {
+        return banReason;
+    }
+
+    public boolean HasNewNotification() {
+        return hasNewNotification;
+    }
+
+    public void setHasNewNotification(boolean hasNewNotification) {
+        this.hasNewNotification = hasNewNotification;
+        RegularUserManager.updateUser(this);
+    }
+
+    public void addFriend(RegularUser user, String type) {
+        try {
+            if (type.equals("Normal Friend")) {
+                friends.remove(user.getId());
+                user.friends.remove(this.getId());
+
+                friends.add(user.getId());
+                user.friends.add(this.getId());
+
+                restrictedFriends.remove(user.getId());
+                user.restrictedFriends.remove(this.getId());
+            }else if (type.equals("Restricted Friend")) {
+                restrictedFriends.remove(user.getId());
+                user.restrictedFriends.remove(this.getId());
+
+                restrictedFriends.add(user.getId());
+                user.restrictedFriends.add(this.getId());
+
+                friends.remove(user.getId());
+                user.friends.remove(this.getId());
+            }
+            RegularUserManager.updateUser(this);
+            RegularUserManager.updateUser(user);
+        }catch (Exception e){
+            new Alert(Alert.AlertType.ERROR, "Error Happened").show();
+        }
     }
 
     public void removeFriend(RegularUser user) {
-        friends.remove(user);
+        friends.remove(user.getId());
+        restrictedFriends.remove(Integer.valueOf(user.getId()));
+        user.friends.remove(Integer.valueOf(this.getId()));
+        user.restrictedFriends.remove(Integer.valueOf(this.getId()));
+
+        RegularUserManager.updateUser(this);
+        RegularUserManager.updateUser(user);
     }
 
-    public void removeRestrictedFriend(RegularUser user) {
-        restrictedFriends.remove(user);
-    }
-
-    public void tagUser(RegularUser user,Post post){
-        /*if (!post.getTaggedUsers().contains(user)) {
-            post.addTaggedUser(user);
-            System.out.println(user.getName() + " has been tagged in the post.");
-        } else {
-            System.out.println(user.getName() + " is already tagged in the post.");
-        }*/
-    }
-
-    public void likePost(Post post){
-        /*if (!post.getLikes().contains(this)) {
-            post.addLike(this);
-        }*/
-    }
-
-    public void unlikePost(Post post){
-        /*if (post.getLikes().contains(this)) {
-            post.removeLike(this);
-        }*/
-    }
-
-    public void comment(Post post, String commentText){
-        /*Comment comment = new Comment(this, commentText);
-        post.addComment(comment);*/
-    }
-
-    public void sendMessage(Post post, String commentText){
-        /*Message message = new Message(this, receiver, messageContent);
-        receiver.receiveMessage(message); */
-    }
-
-    public void sharePost(){
-        /*Post sharedPost = new Post(post);
-        this.posts.add(sharedPost);*/
-    }
-
-    public ArrayList<Post> friendship(RegularUser user) {
-        ArrayList<Post> mutualPosts = new ArrayList<>();
-
-        // Iterate through the current user's posts
-        for (Post post : this.posts) {
-            // Check if the other user has shared the same post
-            if (user.getPosts().contains(post)) {
-                mutualPosts.add(post);
+    public ArrayList<Post> mutualPosts(RegularUser user) {
+        try {
+            List<Post> allPosts = PostManager.readPosts();
+            ArrayList<Post> mutualPosts = new ArrayList<>();
+            ArrayList<Post> user1Posts = new ArrayList<>();
+            ArrayList<Post> user2Posts = new ArrayList<>();
+            for (Post post : allPosts) {
+                if (post.getUser() != null && post.getUser().getId() == this.getId())
+                    user1Posts.add(post);
+                if (post.getUser() != null && post.getUser().getId() == user.getId())
+                    user2Posts.add(post);
             }
+            for (Post post1 : user1Posts)
+                for (Post post2 : user2Posts) {
+                    if (post1.getContent().equals(post2.getContent())) {
+                        String privacy = post2.getPrivacy();
+                        String relation = this.getFriendship(user);
+                        if ((relation.equals("restricted") || relation.equals("notFriend")) && privacy.equals("Private"))
+                            continue;
+                        mutualPosts.add(post1);
+                    }
+                }
+            return mutualPosts;
+        } catch (Exception e) {
+            new Alert(Alert.AlertType.ERROR, "Error Happened").show();
+            return new ArrayList<>();
         }
-
-        return mutualPosts;
     }
 
+    public ArrayList<Integer> mutualFriends(RegularUser user) {
+        try {
+            ArrayList<Integer> friends = new ArrayList<>();
+            ArrayList<Integer> user1Friends = this.getFriends();
+            ArrayList<Integer> user2Friends = user.getFriends();
 
-    public ArrayList<RegularUser> mutualFriends(RegularUser user) {
-        ArrayList<RegularUser> friends = new ArrayList<>();
+            ArrayList<Integer> user1RestrictedFriends = this.getRestrictedFriends();
+            ArrayList<Integer> user2RestrictedFriends = user.getRestrictedFriends();
 
-        // Get the friends of both users
-        ArrayList<RegularUser> user1Friends = this.getFriends();
-        ArrayList<RegularUser> user2Friends = user.getFriends();
+            for (Integer friend : user1Friends)
+                if (user2Friends.contains(friend) || user2RestrictedFriends.contains(friend))
+                    friends.add(friend);
+            for (Integer friend : user1RestrictedFriends)
+                if (user2Friends.contains(friend) || user2RestrictedFriends.contains(friend))
+                    friends.add(friend);
 
-        ArrayList<RegularUser> user1RestrictedFriends = this.getRestrictedFriends();
-        ArrayList<RegularUser> user2RestrictedFriends = user.getRestrictedFriends();
-
-        // Find mutual friends
-        for (RegularUser friend : user1Friends) {
-            if (user2Friends.contains(friend) || user1RestrictedFriends.contains(friend)) {
-                friends.add(friend);
-            }
+            return friends;
+        }catch (NullPointerException e){
+            return new ArrayList<>();
         }
-        for (RegularUser friend : user1RestrictedFriends) {
-            if (user2Friends.contains(friend) || user1RestrictedFriends.contains(friend)) {
-                friends.add(friend);
-            }
-        }
-
-        return friends;
     }
 
-    public void displayInfo(){
-        System.out.println("User Info:");
-        System.out.println("Name: " + getName());
-        System.out.println("Email: " + getEmail());
-        System.out.println("Birthdate: " + getBirthdate());
-        System.out.println("Gender: " + getGender());
-        System.out.println("Phone: " + getPhone());
-        System.out.println("ID: " + getId());
-    }
 }
