@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Conversation {
-    private Integer id;
-    private List<Integer> participants;
+    private final Integer id;
+    private final List<Integer> participants;
     private List<Message> messages;
 
     public Conversation(Integer id, List<Integer> participants) {

@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ConversationListController {
 
@@ -43,7 +44,7 @@ public class ConversationListController {
                             participants += " ...";
                             break;
                         }
-                        participants += RegularUserManager.getUserById(userId).getName();
+                        participants += Objects.requireNonNull(RegularUserManager.getUserById(userId)).getName();
                         if (numberOfParti < conversation.getParticipants().size())
                             participants += ", ";
                         numberOfParti++;
@@ -136,7 +137,7 @@ public class ConversationListController {
                     String name = field.getText();
                     if (!name.isEmpty()) {
                         RegularUser participant = RegularUserManager.findUserByName(name);
-                        if (participant != null && !participants.contains(participant)) {
+                        if (participant != null && !participants.contains(participant.getId())) {
                             participants.add(participant.getId());
                         }else if(participant == user ){
                             new Alert(Alert.AlertType.ERROR, "You can't message yourself!").show();

@@ -6,9 +6,9 @@ import com.example.oop.utils.RegularUserManager;
 import java.util.List;
 
 public class Message implements Notifiable {
-    private RegularUser sender;
-    private List<Integer> receviers;
-    private String content;
+    private final RegularUser sender;
+    private final List<Integer> receviers;
+    private final String content;
 
     public Message(RegularUser sender,List<Integer>receviers,  String content) {
         this.sender = sender;
@@ -33,7 +33,8 @@ public class Message implements Notifiable {
         for (Integer recevierId : receviers) {
             Notification notification = new Notification(id, recevierId, message);
             RegularUser receiver = RegularUserManager.getUserById(recevierId);
-            receiver.setHasNewNotification(true);
+            if (receiver != null)
+                receiver.setHasNewNotification(true);
         }
     }
 }

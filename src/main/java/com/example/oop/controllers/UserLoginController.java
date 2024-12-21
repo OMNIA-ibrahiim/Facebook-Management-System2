@@ -33,8 +33,12 @@ public class UserLoginController {
                     RegularUser user = RegularUserManager.getUserByEmailAndPassword(email, password);
                     if (user == null)
                         throw new IllegalArgumentException("Invalid email or password!");
-                    else
-                        new TimelineController().start(stage,user);
+                    else {
+                        if(user.isBanned())
+                            new Alert(Alert.AlertType.INFORMATION, "You cant't log in, You are banned Because You " + user.getBanReason()).show();
+                        else
+                            new TimelineController().start(stage, user);
+                    }
                 }
             } catch (IllegalArgumentException ex) {
                 new Alert(Alert.AlertType.ERROR, ex.getMessage()).show();

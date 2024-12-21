@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class CommentController {
 
@@ -56,7 +57,7 @@ public class CommentController {
             String commentText = comment_Input.getText().trim();
             if (!commentText.isEmpty()) {
                 Comment newComment = new Comment(CommentManager.getNextCommentId(),post, user, commentText);
-                if(post.getUser().getId() != user.getId())
+                if(!Objects.equals(post.getUser().getId(), user.getId()))
                     newComment.createNotification();
                 CommentManager.savecomment(newComment);
                 VBox COMMENT = createCommentBox(newComment, post, user);
@@ -173,13 +174,13 @@ public class CommentController {
                     likeButton.setText("Like");
                 }
                 else{
-                    if(comment.getUser().getId() == user.getId()){
+                    if(Objects.equals(comment.getUser().getId(), user.getId())){
                         new Alert(Alert.AlertType.ERROR, "You can't like your Comments!").show();
                     }
                     else {
                         comment.addLike(user.getId());
                         likeButton.setText("Unlike");
-                        comment.createLikeNotification(user);
+                        comment.createNotification(user);
                     }
                 }
                 CommentManager.updateComment(comment);
@@ -187,7 +188,7 @@ public class CommentController {
                 actionButtons.getChildren().addAll(likeButton,replyButton, showRepliesButton);
                 tooltip.setText(comment.getLikeCounter() +" Likes");
             }catch (Exception ex){
-                System.out.println("Error in likes!");
+                new Alert(Alert.AlertType.ERROR, "Error Happened").show();
             }
         });
         actionButtons.getChildren().addAll(likeButton,replyButton, showRepliesButton);

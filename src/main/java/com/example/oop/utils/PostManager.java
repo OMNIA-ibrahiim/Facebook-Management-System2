@@ -30,7 +30,7 @@ public class PostManager {
             reader.close();
             return posts != null ? posts : new ArrayList<>();
         } catch (IOException e) {
-            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Error Happened").show();
             return new ArrayList<>();
         }
     }

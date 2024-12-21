@@ -17,6 +17,7 @@ import javafx.stage.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class TimelineController {
 
@@ -64,11 +65,7 @@ public class TimelineController {
         });
         StackPane notificationButtonContainer = new StackPane();
         Circle redDot = new Circle(5, Color.RED);
-        if(user.HasNewNotification()) {
-            redDot.setVisible(true);
-        }
-        else
-            redDot.setVisible(false);
+        redDot.setVisible(user.HasNewNotification());
 
         notificationButtonContainer.getChildren().addAll(notificationsButton, redDot);
         notificationButtonContainer.setAlignment(Pos.TOP_LEFT);
@@ -145,7 +142,7 @@ public class TimelineController {
                         taggedUsers += " ...";
                         break;
                     }
-                    taggedUsers += RegularUserManager.getUserById(userId).getName();
+                    taggedUsers += Objects.requireNonNull(RegularUserManager.getUserById(userId)).getName();
                     if (numberOfUsers < post.getTaggedUsers().size())
                         taggedUsers += ", ";
                     numberOfUsers++;
@@ -187,12 +184,12 @@ public class TimelineController {
                     likeButton.setText("Like");
                 }
                 else{
-                    if(post.getUser().getId() == user.getId())
+                    if(Objects.equals(post.getUser().getId(), user.getId()))
                         new Alert(Alert.AlertType.ERROR, "You can't like your posts!").show();
                     else {
                         post.addLike(user.getId());
                         likeButton.setText("Unlike");
-                        post.createLikeNotification(post.getUser(),user);
+                        post.createNotification(post.getUser(),user);
                     }
                 }
                 PostManager.updatePost(post);

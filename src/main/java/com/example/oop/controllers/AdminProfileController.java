@@ -15,7 +15,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -203,7 +202,7 @@ public class AdminProfileController {
                     Label userNameLabel = new Label("Name: " + post.getUser().getName());
                     Label userEmailLabel = new Label("Email: " + post.getUser().getEmail());
                     Label userPhoneLabel = new Label("Phone: " + post.getUser().getPhone());
-                    Label contentLabel = new Label("Phone: " + post.getContent());
+                    Label contentLabel = new Label("Content: " + post.getContent());
 
                     Button actionButton = new Button(post.getUser().isBanned() ? "Unban" : "Ban");
                     actionButton.setStyle("-fx-background-color: #e7f3ff; -fx-text-fill: #0073e6;");

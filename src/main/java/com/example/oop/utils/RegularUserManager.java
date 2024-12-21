@@ -10,6 +10,7 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class RegularUserManager {
 
@@ -33,7 +34,7 @@ public class RegularUserManager {
 
             return users != null ? users : new ArrayList<>();
         } catch (IOException e) {
-            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Error Happened").show();
             return new ArrayList<>();
         }
     }
@@ -104,7 +105,7 @@ public class RegularUserManager {
     public static void removeUser(RegularUser user){
         List<RegularUser> users = readUsers();
 
-        users.removeIf(u -> u.getId() == (user.getId()));
+        users.removeIf(u -> Objects.equals(u.getId(), user.getId()));
 
         try (Writer writer = new FileWriter(USERS_FILE_PATH)) {
             gson.toJson(users, writer);
@@ -133,7 +134,7 @@ public class RegularUserManager {
         List<RegularUser> users = readUsers();
 
         for (int i = 0; i < users.size(); i++)
-            if (users.get(i).getId() == updatedUser.getId()) {
+            if (Objects.equals(users.get(i).getId(), updatedUser.getId())) {
                 users.set(i, updatedUser);
                 break;
             }

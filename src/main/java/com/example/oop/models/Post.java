@@ -95,7 +95,8 @@ public class Post implements Notifiable {
         for (Integer friendId : friends) {
             Notification notification = new Notification(id, friendId, message);
             RegularUser friend = RegularUserManager.getUserById(friendId);
-            friend.setHasNewNotification(true);
+            if(friend != null)
+                friend.setHasNewNotification(true);
         }
 
         message = this.user.getName() + " Tagged you in a Post!";
@@ -104,7 +105,8 @@ public class Post implements Notifiable {
                 for (Integer taggeduserId : this.taggedUsers) {
                     Notification notification = new Notification(id, taggeduserId, message);
                     RegularUser taggeduser = RegularUserManager.getUserById(taggeduserId);
-                    taggeduser.setHasNewNotification(true);
+                    if(taggeduser != null)
+                        taggeduser.setHasNewNotification(true);
                 }
             }
         } catch (Exception e) {
@@ -113,7 +115,7 @@ public class Post implements Notifiable {
 
     }
 
-    public void createLikeNotification(RegularUser notifiedUser,RegularUser senderUser){
+    public void createNotification(RegularUser notifiedUser, RegularUser senderUser){
         int id = NotificationManager.getNextNotificationId();
         String message = senderUser.getName() + " Liked your Post!";
         Notification notification = new Notification(id, notifiedUser.getId(), message);

@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class SelectedUserProfileController {
 
@@ -110,7 +111,7 @@ public class SelectedUserProfileController {
         showMutualFriendsButton.setOnAction(e -> showMutualFriends(stage,loggedInUser,selectedUser));
         showMutualPostsButton.setOnAction(e -> showMutualPosts(stage,loggedInUser,selectedUser));
         confirmButton.setOnAction(e ->{
-            String selection = FriendshipComboBox.getValue().toString();
+            String selection = FriendshipComboBox.getValue();
             if(selection.equals("Restricted Friend") || selection.equals("Normal Friend"))
                 loggedInUser.addFriend(selectedUser,selection);
             else loggedInUser.removeFriend(selectedUser);
@@ -207,12 +208,13 @@ public class SelectedUserProfileController {
                     userBox.setStyle("-fx-border-color: #ccc; -fx-border-radius: 5; -fx-padding: 10;");
                     userBox.setAlignment(Pos.TOP_LEFT);
 
-                    Label userNameLabel2 = new Label("User : " + friend.getName());
-                    Label useremailLabel = new Label("Email : " + friend.getEmail());
-                    Label userphoneLabel = new Label("Phone : " + friend.getPhone());
-
-                    userBox.getChildren().addAll(userNameLabel2, useremailLabel, userphoneLabel);
-                    friendsContainer.getChildren().add(userBox);
+                    if(friend != null) {
+                        Label userNameLabel2 = new Label("User : " + friend.getName());
+                        Label useremailLabel = new Label("Email : " + friend.getEmail());
+                        Label userphoneLabel = new Label("Phone : " + friend.getPhone());
+                        userBox.getChildren().addAll(userNameLabel2, useremailLabel, userphoneLabel);
+                        friendsContainer.getChildren().add(userBox);
+                    }
                 }
             }
             ScrollPane scrollPane = new ScrollPane(friendsContainer);
@@ -264,12 +266,13 @@ public class SelectedUserProfileController {
                     userBox.setStyle("-fx-border-color: #ccc; -fx-border-radius: 5; -fx-padding: 10;");
                     userBox.setAlignment(Pos.TOP_LEFT);
 
-                    Label userNameLabel2 = new Label("User : " + friend.getName());
-                    Label useremailLabel = new Label("Email : " + friend.getEmail());
-                    Label userphoneLabel = new Label("Phone : " + friend.getPhone());
-
-                    userBox.getChildren().addAll(userNameLabel2, useremailLabel, userphoneLabel);
-                    friendsContainer.getChildren().add(userBox);
+                    if(friend != null) {
+                        Label userNameLabel2 = new Label("User : " + friend.getName());
+                        Label useremailLabel = new Label("Email : " + friend.getEmail());
+                        Label userphoneLabel = new Label("Phone : " + friend.getPhone());
+                        userBox.getChildren().addAll(userNameLabel2, useremailLabel, userphoneLabel);
+                        friendsContainer.getChildren().add(userBox);
+                    }
                 }
                 for (Integer friendId : restrictedFriendsId) {
                     RegularUser friend = RegularUserManager.getUserById(friendId);
@@ -277,12 +280,13 @@ public class SelectedUserProfileController {
                     userBox.setStyle("-fx-border-color: #ccc; -fx-border-radius: 5; -fx-padding: 10;");
                     userBox.setAlignment(Pos.TOP_LEFT);
 
-                    Label userNameLabel2 = new Label("User : " + friend.getName());
-                    Label useremailLabel = new Label("Email : " + friend.getEmail());
-                    Label userphoneLabel = new Label("Phone : " + friend.getPhone());
-
-                    userBox.getChildren().addAll(userNameLabel2, useremailLabel, userphoneLabel);
-                    friendsContainer.getChildren().add(userBox);
+                    if(friend != null) {
+                        Label userNameLabel2 = new Label("User : " + friend.getName());
+                        Label useremailLabel = new Label("Email : " + friend.getEmail());
+                        Label userphoneLabel = new Label("Phone : " + friend.getPhone());
+                        userBox.getChildren().addAll(userNameLabel2, useremailLabel, userphoneLabel);
+                        friendsContainer.getChildren().add(userBox);
+                    }
                 }
             }
             ScrollPane scrollPane = new ScrollPane(friendsContainer);
@@ -379,7 +383,7 @@ public class SelectedUserProfileController {
                                 taggedUsers += " ...";
                                 break;
                             }
-                            taggedUsers += RegularUserManager.getUserById(userId).getName();
+                            taggedUsers += Objects.requireNonNull(RegularUserManager.getUserById(userId)).getName();
                             if (numberOfUsers < post.getTaggedUsers().size())
                                 taggedUsers += ", ";
                             numberOfUsers++;
@@ -411,14 +415,14 @@ public class SelectedUserProfileController {
                             likeButton.setText("Like");
                         }
                         else{
-                            if(post.getUser().getId() == loggedInUser.getId()){
+                            if(Objects.equals(post.getUser().getId(), loggedInUser.getId())){
                                 new Alert(Alert.AlertType.ERROR, "You can't like your posts!").show();
 
                             }
                             else {
                                 post.addLike(loggedInUser.getId());
                                 likeButton.setText("Unlike");
-                                post.createLikeNotification(selectedUser,loggedInUser);
+                                post.createNotification(selectedUser,loggedInUser);
                             }
                         }
                         PostManager.updatePost(post);

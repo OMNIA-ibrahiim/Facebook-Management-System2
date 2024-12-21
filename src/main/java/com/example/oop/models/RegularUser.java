@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class RegularUser extends User {
 
@@ -119,9 +120,9 @@ public class RegularUser extends User {
 
     public void removeFriend(RegularUser user) {
         friends.remove(user.getId());
-        restrictedFriends.remove(Integer.valueOf(user.getId()));
-        user.friends.remove(Integer.valueOf(this.getId()));
-        user.restrictedFriends.remove(Integer.valueOf(this.getId()));
+        restrictedFriends.remove(user.getId());
+        user.friends.remove(this.getId());
+        user.restrictedFriends.remove(this.getId());
 
         RegularUserManager.updateUser(this);
         RegularUserManager.updateUser(user);
@@ -134,9 +135,9 @@ public class RegularUser extends User {
             ArrayList<Post> user1Posts = new ArrayList<>();
             ArrayList<Post> user2Posts = new ArrayList<>();
             for (Post post : allPosts) {
-                if (post.getUser() != null && post.getUser().getId() == this.getId())
+                if (post.getUser() != null && Objects.equals(post.getUser().getId(), this.getId()))
                     user1Posts.add(post);
-                if (post.getUser() != null && post.getUser().getId() == user.getId())
+                if (post.getUser() != null && Objects.equals(post.getUser().getId(), user.getId()))
                     user2Posts.add(post);
             }
             for (Post post1 : user1Posts)

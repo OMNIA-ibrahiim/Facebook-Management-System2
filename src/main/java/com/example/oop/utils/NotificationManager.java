@@ -33,7 +33,7 @@ public class NotificationManager {
 
             return notifications != null ? notifications : new ArrayList<>();
         } catch (IOException e) {
-            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Error Happened").show();
             return new ArrayList<>();
         }
     }

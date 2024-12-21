@@ -13,7 +13,7 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.Objects;
 
 public class CreatePostController {
 
@@ -43,7 +43,7 @@ public class CreatePostController {
         submitButton.setOnAction(e -> {
             try {
                 String content = postContentArea.getText().trim();
-                String privacy = privacyComboBox.getValue().toString();
+                String privacy = privacyComboBox.getValue();
                 if ((!content.isEmpty())) {
                     createPost(user, content,privacy,taggedUsers);
                     new TimelineController().start(stage, user);
@@ -111,8 +111,8 @@ public class CreatePostController {
                     if (!name.isEmpty()) {
                         RegularUser TaggedUser = RegularUserManager.findUserByName(name);
                         String friendship = user.getFriendship(TaggedUser);
-                        if (TaggedUser != null && !taggedUsers.contains(TaggedUser)) {
-                            if (TaggedUser.getId() == user.getId())
+                        if (TaggedUser != null && !taggedUsers.contains(TaggedUser.getId())) {
+                            if (Objects.equals(TaggedUser.getId(), user.getId()))
                                 new Alert(Alert.AlertType.ERROR, "You can't tag yourself!").show();
                             else if(friendship.equals("notFriend"))
                                 new Alert(Alert.AlertType.ERROR, TaggedUser.getName() + " is not a friend!").show();

@@ -10,6 +10,7 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class AdminManager {
 
@@ -32,7 +33,7 @@ public class AdminManager {
 
             return admins != null ? admins : new ArrayList<>();
         } catch (IOException e) {
-            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Error Happened").show();
             return new ArrayList<>();
         }
     }
@@ -59,7 +60,7 @@ public class AdminManager {
         List<Post> posts = PostManager.readPosts();
         if(!posts.isEmpty())
             for(Post post : posts)
-                if(post.getUser().getId() == user.getId())
+                if(Objects.equals(post.getUser().getId(), user.getId()))
                     PostManager.removePost(post);
         RegularUserManager.removeUser(user);
     }
@@ -101,7 +102,7 @@ public class AdminManager {
         try {
             List<RegularUser> users = RegularUserManager.readUsers();
 
-            if (users == null || users.isEmpty())
+            if (users.isEmpty())
                 return new ArrayList<>();
 
             List<RegularUser> bannedUsers = new ArrayList<>();

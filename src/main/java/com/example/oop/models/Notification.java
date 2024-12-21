@@ -3,9 +3,9 @@ package com.example.oop.models;
 import com.example.oop.utils.NotificationManager;
 
 public class Notification {
-    private int id;
-    private int userId;
-    private String message;
+    private final int id;
+    private final int userId;
+    private final String message;
 
     public Notification(int id,int userId, String message) {
         this.id = id;
@@ -20,10 +20,6 @@ public class Notification {
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public int getUserId() {

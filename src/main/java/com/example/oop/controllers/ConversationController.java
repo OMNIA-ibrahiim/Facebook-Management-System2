@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ConversationController {
 
@@ -59,7 +60,7 @@ public class ConversationController {
                 String messageContent = messageField.getText();
                 List<Integer> receivers = new ArrayList<>();
                 for(Integer part : conversation.getParticipants())
-                    if(part != user.getId())receivers.add(part);
+                    if(!Objects.equals(part, user.getId()))receivers.add(part);
                 Message message = new Message(user,receivers,messageContent);
                 conversation.addMessage(message);
                 ConversationsManager.updateConversation(conversation);

@@ -9,6 +9,7 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ConversationsManager {
 
@@ -32,7 +33,7 @@ public class ConversationsManager {
 
             return conversations != null ? conversations : new ArrayList<>();
         } catch (IOException e) {
-            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Error Happened").show();
             return new ArrayList<>();
         }
     }
@@ -70,7 +71,7 @@ public class ConversationsManager {
         List<Conversation> conversations = readConversations();
 
         for (int i = 0; i < conversations.size(); i++)
-            if (conversations.get(i).getId() == conversation.getId()) {
+            if (Objects.equals(conversations.get(i).getId(), conversation.getId())) {
                 conversations.set(i, conversation);
                 break;
             }

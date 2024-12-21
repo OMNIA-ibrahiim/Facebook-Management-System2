@@ -1,7 +1,6 @@
 package com.example.oop.utils;
 
 import com.example.oop.models.Comment;
-import com.example.oop.models.Post;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import javafx.scene.control.Alert;
@@ -37,7 +36,7 @@ public class CommentManager {
             reader.close();
             return Comments != null ? Comments : new ArrayList<>();
         } catch (IOException e) {
-            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Error Happened").show();
             return new ArrayList<>();
         }
     }
@@ -71,7 +70,7 @@ public class CommentManager {
             reader.close();
             return reply != null ? reply : new ArrayList<>();
         } catch (IOException e) {
-            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Error Happened").show();
             return new ArrayList<>();
         }
     }

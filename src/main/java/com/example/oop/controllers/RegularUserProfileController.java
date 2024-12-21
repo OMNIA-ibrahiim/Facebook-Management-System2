@@ -77,11 +77,7 @@ public class RegularUserProfileController {
         });
         StackPane notificationButtonContainer = new StackPane();
         Circle redDot = new Circle(5, Color.RED);
-        if(user.HasNewNotification()) {
-            redDot.setVisible(true);
-        }
-        else
-            redDot.setVisible(false);
+        redDot.setVisible(user.HasNewNotification());
 
         notificationButtonContainer.getChildren().addAll(notificationsButton, redDot);
         notificationButtonContainer.setAlignment(Pos.TOP_LEFT);
@@ -154,12 +150,13 @@ public class RegularUserProfileController {
                     userBox.setStyle("-fx-border-color: #ccc; -fx-border-radius: 5; -fx-padding: 10;");
                     userBox.setAlignment(Pos.TOP_LEFT);
 
-                    Label userNameLabel2 = new Label("User : " + friend.getName());
-                    Label useremailLabel = new Label("Email : " + friend.getEmail());
-                    Label userphoneLabel = new Label("Phone : " + friend.getPhone());
-
-                    userBox.getChildren().addAll(userNameLabel2, useremailLabel, userphoneLabel);
-                    friendsContainer.getChildren().add(userBox);
+                    if(friend != null) {
+                        Label userNameLabel2 = new Label("User : " + friend.getName());
+                        Label useremailLabel = new Label("Email : " + friend.getEmail());
+                        Label userphoneLabel = new Label("Phone : " + friend.getPhone());
+                        userBox.getChildren().addAll(userNameLabel2, useremailLabel, userphoneLabel);
+                        friendsContainer.getChildren().add(userBox);
+                    }
                 }
                 for (Integer friendId : restrictedFriendsId) {
                     RegularUser friend = RegularUserManager.getUserById(friendId);
@@ -167,12 +164,14 @@ public class RegularUserProfileController {
                     userBox.setStyle("-fx-border-color: #ccc; -fx-border-radius: 5; -fx-padding: 10;");
                     userBox.setAlignment(Pos.TOP_LEFT);
 
-                    Label userNameLabel2 = new Label("User : " + friend.getName());
-                    Label useremailLabel = new Label("Email : " + friend.getEmail());
-                    Label userphoneLabel = new Label("Phone : " + friend.getPhone());
+                    if(friend != null) {
+                        Label userNameLabel2 = new Label("User : " + friend.getName());
+                        Label useremailLabel = new Label("Email : " + friend.getEmail());
+                        Label userphoneLabel = new Label("Phone : " + friend.getPhone());
 
-                    userBox.getChildren().addAll(userNameLabel2, useremailLabel, userphoneLabel);
-                    friendsContainer.getChildren().add(userBox);
+                        userBox.getChildren().addAll(userNameLabel2, useremailLabel, userphoneLabel);
+                        friendsContainer.getChildren().add(userBox);
+                    }
                 }
             }
             ScrollPane scrollPane = new ScrollPane(friendsContainer);
@@ -215,13 +214,10 @@ public class RegularUserProfileController {
                 String selectedUserText = userListView.getSelectionModel().getSelectedItem();
                 String selectedUserName = selectedUserText.split(" \\(")[0];
 
-                RegularUser selectedUser = users.stream()
+                users.stream()
                         .filter(user -> user.getName().equals(selectedUserName))
-                        .findFirst()
-                        .orElse(null);
+                        .findFirst().ifPresent(selectedUser -> new SelectedUserProfileController().start(stage, loggedInUser, selectedUser));
 
-                if (selectedUser != null)
-                    new SelectedUserProfileController().start(stage, loggedInUser, selectedUser);
             }
 
         });
@@ -298,7 +294,7 @@ public class RegularUserProfileController {
                                 taggedUsers += " ...";
                                 break;
                             }
-                            taggedUsers += RegularUserManager.getUserById(userId).getName();
+                            taggedUsers += Objects.requireNonNull(RegularUserManager.getUserById(userId)).getName();
                             if (numberOfUsers < post.getTaggedUsers().size())
                                 taggedUsers += ", ";
                             numberOfUsers++;

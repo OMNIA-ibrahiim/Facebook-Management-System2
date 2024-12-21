@@ -7,14 +7,15 @@ import javafx.scene.control.Alert;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Objects;
 
 public class Comment implements Notifiable {
-    protected int id;
-    RegularUser user;
-    protected String content;
+    private int id;
+    private RegularUser user;
+    private String content;
     private ArrayList<Integer> likes;
-    protected ArrayList<Comment> replies;
-    protected int postId;
+    private ArrayList<Comment> replies;
+    private int postId;
     private final Date timestamp;
 
     public Comment(int id,Post post, RegularUser user, String content) {
@@ -83,13 +84,13 @@ public class Comment implements Notifiable {
     public void createNotification() {
         int id = NotificationManager.getNextNotificationId() + 1;
         String message = this.user.getName() + " Commented on your Post!";
-        Notification notification = new Notification(id, PostManager.getPostById(this.postId).getUser().getId(), message);
-        PostManager.getPostById(this.postId).getUser().setHasNewNotification(true);
+        Notification notification = new Notification(id, Objects.requireNonNull(PostManager.getPostById(this.postId)).getUser().getId(), message);
+        Objects.requireNonNull(PostManager.getPostById(this.postId)).getUser().setHasNewNotification(true);
     }
 
-    public void createLikeNotification(RegularUser likeUser){
+    public void createNotification(RegularUser likeUser){
         int id = NotificationManager.getNextNotificationId();
-        String message = likeUser.getName() + " Liked your Comment on " + PostManager.getPostById(this.postId).getUser().getName() + " Post";
+        String message = likeUser.getName() + " Liked your Comment on " + Objects.requireNonNull(PostManager.getPostById(this.postId)).getUser().getName() + " Post";
         Notification notification = new Notification(id, this.user.getId(), message);
         this.user.setHasNewNotification(true);
     }
