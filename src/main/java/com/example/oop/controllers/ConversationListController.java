@@ -131,6 +131,7 @@ public class ConversationListController {
                 new Alert(Alert.AlertType.ERROR, "Select Users To start Conversation!").show();
             }
             else {
+                boolean startConversation = true;
                 List<Integer> participants = new ArrayList<>();
                 participants.add(user.getId());
                 for (TextField field : participantFields) {
@@ -141,19 +142,27 @@ public class ConversationListController {
                             participants.add(participant.getId());
                         }else if(participant == user ){
                             new Alert(Alert.AlertType.ERROR, "You can't message yourself!").show();
+                            startConversation = false;
                         }else {
                             new Alert(Alert.AlertType.ERROR, "User " + name + " not found or already in the conversation.").show();
+                            startConversation = false;
                         }
                     }
+                    else{
+                        new Alert(Alert.AlertType.ERROR, "Select Users To start Conversation!").show();
+                        startConversation = false;
+                    }
                 }
-                Conversation newConversation = new Conversation(ConversationsManager.getNextConversationId(), participants);
-                try {
-                    ConversationsManager.saveConversation(newConversation);
-                } catch (Exception ex) {
-                    new Alert(Alert.AlertType.ERROR,"Failed to save the group conversation. Please try again.").show();
+                if(startConversation) {
+                    Conversation newConversation = new Conversation(ConversationsManager.getNextConversationId(), participants);
+                    try {
+                        ConversationsManager.saveConversation(newConversation);
+                    } catch (Exception ex) {
+                        new Alert(Alert.AlertType.ERROR, "Failed to save the group conversation. Please try again.").show();
+                    }
+                    new ConversationController().start(stage, newConversation, user);
                 }
                 smallStage.close();
-                new ConversationController().start(stage, newConversation, user);
             }
         });
         startButton.setStyle("-fx-font-size:18px;-fx-font-weight:bold;");
