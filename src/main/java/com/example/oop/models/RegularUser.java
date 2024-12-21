@@ -92,24 +92,16 @@ public class RegularUser extends User {
 
     public void addFriend(RegularUser user, String type) {
         try {
+            friends.remove(user.getId());
+            user.friends.remove(this.getId());
+            restrictedFriends.remove(user.getId());
+            user.restrictedFriends.remove(this.getId());
             if (type.equals("Normal Friend")) {
-                friends.remove(user.getId());
-                user.friends.remove(this.getId());
-
                 friends.add(user.getId());
                 user.friends.add(this.getId());
-
-                restrictedFriends.remove(user.getId());
-                user.restrictedFriends.remove(this.getId());
             }else if (type.equals("Restricted Friend")) {
-                restrictedFriends.remove(user.getId());
-                user.restrictedFriends.remove(this.getId());
-
                 restrictedFriends.add(user.getId());
                 user.restrictedFriends.add(this.getId());
-
-                friends.remove(user.getId());
-                user.friends.remove(this.getId());
             }
             RegularUserManager.updateUser(this);
             RegularUserManager.updateUser(user);
