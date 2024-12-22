@@ -6,6 +6,7 @@ public class Admin extends User{
 
     public Admin(String name, String email, String password, String birthdate, String gender, String phone, int id) {
         super(name, email, password, birthdate, gender, phone, id);
+        AdminManager.saveAdmin(this);
     }
 
     public void banUser(RegularUser user,String reason){

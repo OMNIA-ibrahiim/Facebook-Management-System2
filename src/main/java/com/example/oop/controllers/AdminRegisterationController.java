@@ -60,9 +60,9 @@ public class AdminRegisterationController {
                 else {
                     if(AdminManager.validateAdminPassword(adminPassword)) {
                         int id = AdminManager.returnNextAdminId();
-                        Admin admin = new Admin(name, email, password, birthdate, gender, phone, id);
-                        AdminManager.saveAdmin(admin);
-                        new AdminLoginController().start(stage);
+                        User user = new Admin(name, email, password, birthdate, gender, phone, id);
+                        Admin admin = (Admin) user;
+                        new AdminProfileController().start(stage,admin);
                     }
                     else{
                         throw new IllegalArgumentException("Admin Passwords do not match!");

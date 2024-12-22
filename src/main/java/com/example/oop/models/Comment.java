@@ -82,7 +82,7 @@ public class Comment implements Notifiable {
 
     @Override
     public void createNotification() {
-        int id = NotificationManager.getNextNotificationId() + 1;
+        int id = NotificationManager.getNextNotificationId() ;
         String message = this.user.getName() + " Commented on your Post!";
         Notification notification = new Notification(id, Objects.requireNonNull(PostManager.getPostById(this.postId)).getUser().getId(), message);
         Objects.requireNonNull(PostManager.getPostById(this.postId)).getUser().setHasNewNotification(true);

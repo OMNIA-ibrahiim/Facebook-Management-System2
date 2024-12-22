@@ -57,8 +57,9 @@ public class UserRegistrationController {
 
                 else {
                     int id = RegularUserManager.returnNextUserId();
-                    RegularUser user = new RegularUser(name, email, password, birthdate, gender, phone,id);
-                    new UserLoginController().start(stage);
+                    User user = new RegularUser(name, email, password, birthdate, gender, phone,id);
+                    RegularUser regularUser = (RegularUser) user;
+                    new RegularUserProfileController().start(stage,regularUser);
                 }
             } catch (IllegalArgumentException ex) {
                 new Alert(Alert.AlertType.ERROR, ex.getMessage()).show();
